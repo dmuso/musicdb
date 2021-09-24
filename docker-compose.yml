@@ -4,5 +4,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - 80:80
     volumes:
       - ./:/app
+    command: python manage.py runserver 0.0.0.0:80
