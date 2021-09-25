@@ -1,13 +1,15 @@
 from django.db import models
 from django.db.models.deletion import PROTECT
 from django.db.models import UniqueConstraint
-# from piece.models.Piece.instrument import RelatedObjectDoesNotExist
 
 # ---
 
 class InstrumentGroup(models.Model):
   name = models.CharField(max_length=240)
   abbreviation = models.CharField(max_length=2)
+
+  class Meta:
+    ordering = ['name']
 
   def __str__(self) -> str:
     return self.name + ' (' + self.abbreviation + ')'
@@ -22,6 +24,9 @@ class Instrument(models.Model):
   name = models.CharField(max_length=240)
   abbreviation = models.CharField(max_length=2)
 
+  class Meta:
+    ordering = ['name']
+
   def __str__(self) -> str:
     return self.name + ' (' + self.abbreviation + ')'
 
@@ -34,8 +39,54 @@ class Category(models.Model):
   name = models.CharField(max_length=240)
   code = models.CharField(max_length=2)
 
+  class Meta:
+    ordering = ['code', 'name']
+
   def __str__(self) -> str:
     return '(' + self.code + ') ' + self.name
+
+  # UniqueConstraint(fields=['name'], name='unique_category_name')
+  # UniqueConstraint(fields=['code'], name='unique_category_code')
+
+# ---
+
+class Publisher(models.Model):
+  name = models.CharField(max_length=240)
+
+  class Meta:
+    ordering = ['name']
+
+  def __str__(self) -> str:
+    return self.name
+
+  # UniqueConstraint(fields=['name'], name='unique_category_name')
+  # UniqueConstraint(fields=['code'], name='unique_category_code')
+
+# ---
+
+class Location(models.Model):
+  name = models.CharField(max_length=240)
+
+  class Meta:
+    ordering = ['name']
+
+  def __str__(self) -> str:
+    return self.name
+
+  # UniqueConstraint(fields=['name'], name='unique_category_name')
+  # UniqueConstraint(fields=['code'], name='unique_category_code')
+
+# ---
+
+class Composer(models.Model):
+  first_name = models.CharField(max_length=240)
+  last_name = models.CharField(max_length=240)
+
+  class Meta:
+    ordering = ['last_name', 'first_name']
+
+  def __str__(self) -> str:
+    return self.last_name + ', ' + self.first_name
 
   # UniqueConstraint(fields=['name'], name='unique_category_name')
   # UniqueConstraint(fields=['code'], name='unique_category_code')
@@ -45,25 +96,29 @@ class Category(models.Model):
 class Piece(models.Model):
   instrument = models.ForeignKey(Instrument, on_delete=PROTECT)
   category = models.ForeignKey(Category, on_delete=PROTECT)
+  publisher = models.ForeignKey(Publisher, on_delete=PROTECT)
+  location = models.ForeignKey(Location, on_delete=PROTECT)
+
   grade = models.CharField(max_length=30)
   
   catalogue_number = models.CharField(max_length=30)
   number_of_copies = models.IntegerField(default=1)
-  # location = 
 
   title = models.CharField(max_length=240)
-  # accompaniment =
-  # composer = 
-  # publisher = 
+  accompaniment = models.ManyToManyField(Instrument, related_name='instrument_accompaniment')
+  composers = models.ManyToManyField(Composer)
   isbn = models.CharField(max_length=50)
 
-  # missing_parts =
+  missing_parts = models.CharField(max_length=240)
   date_last_checked = models.DateTimeField
 
   # notes =
 
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
+
+  class Meta:
+    ordering = ['instrument', 'category', 'catalogue_number', 'title']
 
   def __str__(self) -> str:
     return self.title
