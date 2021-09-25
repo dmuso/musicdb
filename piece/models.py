@@ -110,9 +110,9 @@ class Piece(models.Model):
   isbn = models.CharField(max_length=50)
 
   missing_parts = models.CharField(max_length=240)
-  date_last_checked = models.DateTimeField
+  date_last_checked = models.DateTimeField()
 
-  # notes =
+  notes = models.TextField()
 
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
