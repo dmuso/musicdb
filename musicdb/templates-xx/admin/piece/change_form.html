@@ -1,0 +1,25 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}
+    <script src="{{MEDIA_URL}}js/jquery.js" type="text/javascript"></script>
+    <script type="text/javascript">
+            alert('hi');
+      $(document).ready(function() {
+        alert('hi');
+        $('#id_template').change(function() {
+          $.ajax({
+            type: 'POST',
+            url: "{% url get_template_info %}",
+            data: {'template_id': $('#id_template').val()},
+            success: function(data, _status) {
+              $('#id_throttle').val(data.throttle);
+              $('#id_rate_limit').val(data.rate_limit);
+              $('#id_product').val(data.product);
+              $('#id_tier_group').val(data.tier_group);
+            },
+            dataType: "json"
+          });               
+        });
+      });
+    </script>
+{% endblock %}

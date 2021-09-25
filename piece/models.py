@@ -30,14 +30,13 @@ class Category(models.Model):
 # ---
 
 class Piece(models.Model):
-  number_of_copies = models.IntegerField(default=1)
-  # location = 
-
   instrument = models.ForeignKey(Instrument, on_delete=PROTECT)
   category = models.ForeignKey(Category, on_delete=PROTECT)
   # grade = 
   
   catalogue_number = models.CharField(max_length=30)
+  number_of_copies = models.IntegerField(default=1)
+  # location = 
 
   title = models.CharField(max_length=240)
   # accompaniment =
