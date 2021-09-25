@@ -5,7 +5,20 @@ from django.db.models import UniqueConstraint
 
 # ---
 
+class InstrumentGroup(models.Model):
+  name = models.CharField(max_length=240)
+  abbreviation = models.CharField(max_length=2)
+
+  def __str__(self) -> str:
+    return self.name + ' (' + self.abbreviation + ')'
+
+  # UniqueConstraint(fields=['name'], name='unique_instrument_name')
+  # UniqueConstraint(fields=['abbreviation'], name='unique_instrument_abbreviation')
+
+# ---
+
 class Instrument(models.Model):
+  instrument_group = models.ForeignKey(InstrumentGroup, on_delete=PROTECT)
   name = models.CharField(max_length=240)
   abbreviation = models.CharField(max_length=2)
 
@@ -32,7 +45,7 @@ class Category(models.Model):
 class Piece(models.Model):
   instrument = models.ForeignKey(Instrument, on_delete=PROTECT)
   category = models.ForeignKey(Category, on_delete=PROTECT)
-  # grade = 
+  grade = models.CharField(max_length=30)
   
   catalogue_number = models.CharField(max_length=30)
   number_of_copies = models.IntegerField(default=1)
@@ -42,10 +55,10 @@ class Piece(models.Model):
   # accompaniment =
   # composer = 
   # publisher = 
-  # isbn =
+  isbn = models.CharField(max_length=50)
 
   # missing_parts =
-  # date_last_checked =
+  date_last_checked = models.DateTimeField
 
   # notes =
 
