@@ -30,7 +30,6 @@ class Category(models.Model):
 # ---
 
 class Piece(models.Model):
-  # catalogue_number = 
   number_of_copies = models.IntegerField(default=1)
   # location = 
 
@@ -38,6 +37,8 @@ class Piece(models.Model):
   category = models.ForeignKey(Category, on_delete=PROTECT)
   # grade = 
   
+  catalogue_number = models.CharField(max_length=30)
+
   title = models.CharField(max_length=240)
   # accompaniment =
   # composer = 
@@ -49,11 +50,29 @@ class Piece(models.Model):
 
   # notes =
 
+  created_at = models.DateTimeField(auto_now_add=True)
+  updated_at = models.DateTimeField(auto_now=True)
+
   def __str__(self) -> str:
     return self.title
 
-  def suggested_cat_code(self) -> str:
+  def last_cat_number(self) -> str:
     if hasattr(self, 'instrument') and hasattr(self, 'category'):
-      return self.instrument.abbreviation + self.category.code
+      try:
+        return Piece.objects.filter(instrument=self.instrument, category=self.category).order_by("-created_at")[0:1].get().catalogue_number
+      except self.DoesNotExist:
+        return ""
+    else:
+      return ""
+
+  def suggested_cat_number(self) -> str:
+    if hasattr(self, 'instrument') and hasattr(self, 'category'):
+      catalogue_number = self.last_cat_number()
+      if catalogue_number != "":
+        number = int(catalogue_number.split(".")[1])
+        number += 1
+      else:
+        number = 1
+      return self.instrument.abbreviation + self.category.code + '.' + f'{number:04}'
     else:
       return ""
