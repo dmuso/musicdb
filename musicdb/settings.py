@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'piece.apps.PieceConfig',
-    'instrument.apps.InstrumentConfig',
 ]
 
 MIDDLEWARE = [
