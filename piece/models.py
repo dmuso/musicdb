@@ -99,16 +99,16 @@ class Piece(models.Model):
   publisher = models.ForeignKey(Publisher, on_delete=PROTECT)
   location = models.ForeignKey(Location, on_delete=PROTECT)
 
-  grade = models.CharField(max_length=30, blank=True)
-  
   catalogue_number = models.CharField(max_length=30)
   number_of_copies = models.IntegerField(default=1)
 
   title = models.CharField(max_length=240)
-  accompaniment = models.ManyToManyField(Instrument, related_name='instrument_accompaniment', blank=True)
   composers = models.ManyToManyField(Composer)
   isbn = models.CharField(max_length=50, blank=True)
 
+  grade = models.CharField(max_length=30, blank=True)
+  
+  accompaniment = models.ManyToManyField(Instrument, related_name='instrument_accompaniment', blank=True)
   missing_parts = models.CharField(max_length=240, blank=True)
   date_last_checked = models.DateField(auto_now_add=True)
 
