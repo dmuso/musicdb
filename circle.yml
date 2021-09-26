@@ -1,0 +1,19 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  post:
+    - docker info
+    - docker build -t dmuso/musicdb .
+
+test:
+  override:
+    - docker run dmuso/musicdb python manage.py test
+
+deployment:
+#   hub:
+#     branch: master
+#     commands:
+#       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+#       - docker push dmuso/musicdb

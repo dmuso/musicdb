@@ -25,10 +25,10 @@ class Instrument(models.Model):
   abbreviation = models.CharField(max_length=2)
 
   class Meta:
-    ordering = ['name']
+    ordering = ['instrument_group', 'name']
 
   def __str__(self) -> str:
-    return self.name + ' (' + self.abbreviation + ')'
+    return self.instrument_group.name + ' - ' + self.name + ' (' + self.abbreviation + ')'
 
   # UniqueConstraint(fields=['name'], name='unique_instrument_name')
   # UniqueConstraint(fields=['abbreviation'], name='unique_instrument_abbreviation')
@@ -41,6 +41,7 @@ class Category(models.Model):
 
   class Meta:
     ordering = ['code', 'name']
+    verbose_name_plural = "Categories"
 
   def __str__(self) -> str:
     return '(' + self.code + ') ' + self.name
