@@ -122,7 +122,7 @@ class Piece(models.Model):
     ordering = ['instrument', 'category', 'catalogue_number', 'title']
 
   def __str__(self) -> str:
-    return self.title
+    return self.catalogue_number + " - " + self.title
 
   def last_cat_number(self) -> str:
     if hasattr(self, 'instrument') and hasattr(self, 'category'):
