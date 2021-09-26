@@ -1,0 +1,11 @@
+{% include 'partials/header.html' with heading="Browse by Instrument" %}
+
+<ul>
+  {% for instrument in object_list %}
+    <li>
+      <a href="/search?instrument={{ instrument.pk }}">{{ instrument }}</a>
+    </li>
+  {% endfor %}
+</ul>
+
+{% include 'partials/footer.html' %}
