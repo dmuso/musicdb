@@ -1,0 +1,19 @@
+body {
+  background-color: bisque;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+}
+
+.search-home {
+  margin: 100px;
+  text-align: center;
+}
+
+#logo {
+  height: 200px;
+}
+
+#search {
+  padding: 10px;
+  font-size: 1.2em;
+  width: 80%;
+}
