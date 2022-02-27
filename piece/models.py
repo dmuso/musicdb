@@ -100,6 +100,8 @@ class Piece(models.Model):
   publisher = models.ForeignKey(Publisher, on_delete=PROTECT)
   location = models.ForeignKey(Location, on_delete=PROTECT)
 
+  # image = models.ImageField()
+
   catalogue_number = models.CharField(max_length=30)
   number_of_copies = models.IntegerField(default=1)
 

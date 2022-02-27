@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+admin.site.site_header = 'Music DB Administration'
+admin.site.site_title = 'Music DB Administration'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('piece.urls')),

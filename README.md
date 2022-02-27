@@ -20,3 +20,31 @@
 |   L    | Location                  | Location name                                                                                   | SS Music 10                   |
 |   M    | Date Last Checked         | Date in DD/MM/YYYY format                                                                       | 24/05/2021                    |
 |   N    | Notes                     | Free text                                                                                       | Photocopies in Green folder   |
+
+
+## Notes and Feature Requests
+
+* Search by composer
+* Add image of book
+* Composer / Arranger or Editor, delimited by forward slash, teachers will search by arranger
+* Arr. prefixes arranger
+* Find catalogue numbers that are not used
+* Add columns from Concert Band file
+* Add barcode field
+* Add notes by teacher
+* Add/protect notes by library staff
+
+## Common Commands
+
+    # Generate migrations
+    python manage.py makemigrations polls
+
+    # Apply migrations
+    python manage.py migrate
+
+    # Console CLI
+    python manage.py shell
+
+## Infrastructure
+
+DO Postgres: default db (defaultdb) and default admin user (doadmin)

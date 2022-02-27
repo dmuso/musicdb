@@ -1,7 +1,7 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView, ListView
+# from django.shortcuts import render
+from django.views.generic import TemplateView, ListView, DetailView
 from django.db.models import Q
-from .models import Instrument, Piece
+from .models import Instrument, Composer, Piece
 
 class HomePageView(TemplateView):
   template_name='home.html'
@@ -12,9 +12,14 @@ class SearchResultsView(ListView):
   
   def get_queryset(self):
     instrument_query = self.request.GET.get('instrument')
+    composer_query = self.request.GET.get('composer')
     if instrument_query:
       object_list = Piece.objects.filter(
         instrument=instrument_query
+      )
+    elif composer_query:
+      object_list = Piece.objects.filter(
+        composer=composer_query
       )
     else:
       query = self.request.GET.get('q')
@@ -29,3 +34,12 @@ class SearchResultsView(ListView):
 class BrowseInstrumentView(ListView):
   model = Instrument
   template_name = 'browse_by_instrument.html'
+
+class BrowseComposerView(ListView):
+  model = Composer
+  template_name = 'browse_by_composer.html'
+
+class PieceDetailView(DetailView):
+  model = Piece
+  template_name = 'view_piece.html'
+

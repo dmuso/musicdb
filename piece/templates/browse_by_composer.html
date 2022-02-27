@@ -1,0 +1,11 @@
+{% include 'partials/header.html' with heading="Browse by Composer" %}
+
+<ul>
+  {% for composer in object_list %}
+  <li>
+    <a href="/search?composer={{ composer.pk }}">{{ composer }}</a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% include 'partials/footer.html' %}
