@@ -3,14 +3,25 @@
 <html>
   <head>
     <title>Music DB</title>
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css@0.5.9/dist/spectre.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css@0.5.9/dist/spectre-exp.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css@0.5.9/dist/spectre-icons.min.css">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
   </head>
   <body>
-    <div class="content">
-      <img id="logo" src="{% static 'images/logo.jpg' %}">
-      <ul>
-        <li><a href="/">Home / Search</a></li>
-        <li><a href="/browse/instrument">Browse by Instrument</a></li>
-        <li><a href="/browse/composer">Browse by Composer</a></li>
-      </ul>
-      <h1>{{ heading }}</h1>
+    <div class="container">
+      <div class="columns">
+        <div class="column col-2 navigation">
+          <p>
+            <img id="logo" src="{% static 'images/logo.jpg' %}">
+          </p>
+          <ul>
+            <li><a href="/">Home / Search</a></li>
+            <li><a href="/browse/instrument">Browse by Instrument</a></li>
+            <li><a href="/browse/composer">Browse by Composer</a></li>
+            <li><a href="/browse/category">Browse by Category</a></li>
+            <li><a href="/browse/publisher">Browse by Publisher</a></li>
+          </ul>
+        </div>
+        <div class="column col-10">
+          <h1>{{ heading }}</h1>

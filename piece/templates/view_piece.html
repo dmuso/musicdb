@@ -1,7 +1,99 @@
 {% include 'partials/header.html' with heading=piece %}
 
-<h1>
-  {{ piece }}
-</h1>
+<div class="piece columns">
+  <div class="cover-image column col-3">
+    image could go here
+  </div>
+  <div class="column col-9">
+    <table>
+      <tr>
+        <th>Composer:</th>
+        <td>{% for composer in piece.composers.all %}
+        {{ composer }},
+        {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <th>Instrument:</th>
+        <td>{{ piece.instrument }}</td>
+      </tr>
+      <tr>
+        <th>Category:</th>
+        <td>{{ piece.category }}</td>
+      </tr>
+      <tr>
+        <th>Publisher: </th>
+        <td>{{ piece.publisher }}</td>
+      </tr>
+      <tr><th>&nbsp;</th><td>&nbsp;</td></tr>
+      <tr>
+        <th>Catalogue Number: </th>
+        <td>{{ piece.catalogue_number }}</td>
+      </tr>
+      <tr>
+        <th>Number of copies: </th>
+        <td>{{ piece.number_of_copies }}</td>
+      </tr>
+      <tr>
+        <th>Location: </th>
+        <td>{{ piece.location }}</td>
+      </tr>
+      <tr>
+        <th>ISBN: </th>
+        <td>{{ piece.isbn }}</td>
+      </tr>
+      <tr>
+        <th>&nbsp;</th>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <th>Grade: </th>
+        <td>{{ piece.grade }}</td>
+      </tr>
+      <tr>
+        <th>Accompaniment: </th>
+        <td>
+          {% for accompaniment in piece.accompaniments.all %}
+            {{ accompaniment }},
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <th>&nbsp;</th>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <th>Missing parts:</th>
+        <td>{{ piece.missing_parts }}</td>
+      </tr>
+      <tr>
+        <th>Date last checked: </th>
+        <td>{{ piece.date_last_checked }}</td>
+      </tr>
+      <tr>
+        <th>&nbsp;</th>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <th>Notes: </th>
+        <td>{{ piece.notes }}</td>
+      </tr>
+      <tr>
+        <th>&nbsp;</th>
+        <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <th>Record created at: </th>
+        <td>{{ piece.created_at }}</td>
+      </tr>
+      <tr>
+        <th>Record last updated at: </th>
+        <td>{{ piece.updated_at }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+
 
 {% include 'partials/footer.html' %}

@@ -1,0 +1,11 @@
+{% include 'partials/header.html' with heading="Browse by Category" %}
+
+<ul>
+  {% for category in object_list %}
+  <li>
+    <a href="/search?category={{ category.pk }}">{{ category }}</a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% include 'partials/footer.html' %}

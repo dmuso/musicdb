@@ -1,6 +1,5 @@
 body {
-  background-color: bisque;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  background-color: #eeeef0;
 }
 
 .search-home {
@@ -9,11 +8,46 @@ body {
 }
 
 #logo {
-  height: 200px;
+  width: 100%;
 }
 
 #search {
   padding: 10px;
   font-size: 1.2em;
   width: 80%;
+}
+
+.navigation {
+  font-size: 0.8em;
+}
+
+.navigation ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.search-results {
+}
+
+.search-title {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.search-subtitle {
+  font-size: 0.8em;
+  color: chocolate;
+  padding-bottom: 10px;
+}
+
+.piece .cover-image {
+  /* width: 100%; */
+  /* height: auto; */
+  border: 1px solid #ccc;
+}
+
+.piece th {
+  text-align: left;
+  padding-right: 10px;
 }
