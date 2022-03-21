@@ -23,11 +23,7 @@ jobs:
         run: docker build . --file Dockerfile --tag $IMAGE_NAME:${GITHUB_RUN_NUMBER}
 
       - name: Log in to registry
-        # This is where you will update the PAT to GITHUB_TOKEN
         run: echo "${{ secrets.GH_REPOSITORY_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push image
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:${GITHUB_RUN_NUMBER}
-
-          docker push $IMAGE_ID:${GITHUB_RUN_NUMBER}
+        run: docker push ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:${GITHUB_RUN_NUMBER}
