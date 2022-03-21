@@ -25,7 +25,7 @@
 ## Notes and Feature Requests
 
 * Search by composer
-* Add image of book
+* Add images of book
 * Composer / Arranger or Editor, delimited by forward slash, teachers will search by arranger
 * Arr. prefixes arranger
 * Find catalogue numbers that are not used

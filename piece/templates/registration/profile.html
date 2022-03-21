@@ -1,0 +1,11 @@
+{% include 'partials/header.html' with heading='Welcome to Music DB' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<p>Logged in as {{ user.get_username }}</p>
+{% endif %}
+
+{% endblock %}
+
+{% include 'partials/footer.html' %}

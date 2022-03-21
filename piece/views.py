@@ -1,12 +1,13 @@
 # from django.shortcuts import render
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, ListView, DetailView
 from django.db.models import Q
 from .models import Category, Instrument, Composer, Publisher, Piece
 
-class HomePageView(TemplateView):
+class HomePageView(LoginRequiredMixin, TemplateView):
   template_name='home.html'
 
-class SearchResultsView(ListView):
+class SearchResultsView(LoginRequiredMixin, ListView):
   model = Piece
   template_name = 'search_results.html'
   
@@ -42,23 +43,23 @@ class SearchResultsView(ListView):
       )
     return object_list
 
-class BrowseInstrumentView(ListView):
+class BrowseInstrumentView(LoginRequiredMixin, ListView):
   model = Instrument
   template_name = 'browse_by_instrument.html'
 
-class BrowseComposerView(ListView):
+class BrowseComposerView(LoginRequiredMixin, ListView):
   model = Composer
   template_name = 'browse_by_composer.html'
 
-class BrowseCategoryView(ListView):
+class BrowseCategoryView(LoginRequiredMixin, ListView):
   model = Category
   template_name = 'browse_by_category.html'
 
-class BrowsePublisherView(ListView):
+class BrowsePublisherView(LoginRequiredMixin, ListView):
   model = Publisher
   template_name = 'browse_by_publisher.html'
 
-class PieceDetailView(DetailView):
+class PieceDetailView(LoginRequiredMixin, DetailView):
   model = Piece
   template_name = 'view_piece.html'
 

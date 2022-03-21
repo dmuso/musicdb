@@ -15,12 +15,21 @@
           <p>
             <img id="logo" src="{% static 'images/logo.jpg' %}">
           </p>
+          {% if user.is_authenticated %}
+            <p>Logged in as {{ user.get_username }}</p>
+          {% endif %}
           <ul>
-            <li><a href="/">Home / Search</a></li>
-            <li><a href="/browse/instrument">Browse by Instrument</a></li>
-            <li><a href="/browse/composer">Browse by Composer</a></li>
-            <li><a href="/browse/category">Browse by Category</a></li>
-            <li><a href="/browse/publisher">Browse by Publisher</a></li>
+            {% if user.is_authenticated %}
+              <li><a href="/">Home / Search</a></li>
+              <li><a href="/browse/instrument">Browse by Instrument</a></li>
+              <li><a href="/browse/composer">Browse by Composer</a></li>
+              <li><a href="/browse/category">Browse by Category</a></li>
+              <li><a href="/browse/publisher">Browse by Publisher</a></li>
+              <li><a href="/admin">Catalogue Admin</a></li>
+              <li><a href="{% url 'logout'%}">Logout</a></li>
+            {% else %}
+              <li><a href="{% url 'login'%}">Login</a></li>
+            {% endif %}
           </ul>
         </div>
         <div class="column col-10">

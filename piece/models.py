@@ -12,7 +12,8 @@ class InstrumentGroup(models.Model):
     ordering = ['name']
 
   def __str__(self) -> str:
-    return self.name + ' (' + self.abbreviation + ')'
+    # return self.name + ' (' + self.abbreviation + ')'
+    return self.name
 
   # UniqueConstraint(fields=['name'], name='unique_instrument_name')
   # UniqueConstraint(fields=['abbreviation'], name='unique_instrument_abbreviation')
@@ -28,7 +29,8 @@ class Instrument(models.Model):
     ordering = ['instrument_group', 'name']
 
   def __str__(self) -> str:
-    return self.instrument_group.name + ' - ' + self.name + ' (' + self.abbreviation + ')'
+    # return self.instrument_group.name + ' - ' + self.name + ' (' + self.abbreviation + ')'
+    return self.instrument_group.name + ' - ' + self.name
 
   # UniqueConstraint(fields=['name'], name='unique_instrument_name')
   # UniqueConstraint(fields=['abbreviation'], name='unique_instrument_abbreviation')
@@ -44,7 +46,8 @@ class Category(models.Model):
     verbose_name_plural = "Categories"
 
   def __str__(self) -> str:
-    return '(' + self.code + ') ' + self.name
+    # return '(' + self.code + ') ' + self.name
+    return self.name
 
   # UniqueConstraint(fields=['name'], name='unique_category_name')
   # UniqueConstraint(fields=['code'], name='unique_category_code')
@@ -124,7 +127,8 @@ class Piece(models.Model):
     ordering = ['instrument', 'category', 'catalogue_number', 'title']
 
   def __str__(self) -> str:
-    return self.catalogue_number + " - " + self.title
+    # return self.catalogue_number + " - " + self.title
+    return self.title
 
   def last_cat_number(self) -> str:
     if hasattr(self, 'instrument') and hasattr(self, 'category'):
