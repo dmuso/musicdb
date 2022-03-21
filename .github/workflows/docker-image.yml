@@ -30,4 +30,5 @@ jobs:
           IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
           VERSION=${{ github.run_number }}
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+          docker tag $IMAGE_NAME $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION
