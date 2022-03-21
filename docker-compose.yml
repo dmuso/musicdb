@@ -8,4 +8,16 @@ services:
       - 80:80
     volumes:
       - ./:/app
+    environment:
+      DB_HOST: db
+      DB_NAME: dbuser
+      DB_USER: dbuser
+      DB_PASSWORD: dbpassword
+      DB_PORT: 5432
     command: python manage.py runserver 0.0.0.0:80
+
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: dbpassword
