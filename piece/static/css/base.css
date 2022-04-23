@@ -35,6 +35,15 @@ body {
   font-weight: bold;
 }
 
+.search-subheader {
+  margin-bottom: 20px;
+}
+
+.search-subheader label {
+  width: 130px;
+  display: inline-block;
+}
+
 .search-subtitle {
   font-size: 0.8em;
   color: chocolate;

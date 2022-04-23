@@ -16,8 +16,25 @@ services:
       DB_PORT: 5432
     command: python manage.py runserver 0.0.0.0:80
 
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    environment:
+      DB_HOST: db
+      DB_NAME: dbuser
+      DB_USER: dbuser
+      DB_PASSWORD: dbpassword
+      DB_PORT: 5432
+    command: python manage.py test
+
+
   db:
     image: postgres
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_USER: dbuser
       POSTGRES_PASSWORD: dbpassword

@@ -37,13 +37,13 @@
 ## Common Commands
 
     # Generate migrations
-    python manage.py makemigrations polls
+    docker-compose run app python manage.py makemigrations piece
 
     # Apply migrations
-    python manage.py migrate
+    docker-compose run app python manage.py migrate
 
     # Console CLI
-    python manage.py shell
+    docker-compose run app python manage.py shell
 
 ## Infrastructure
 

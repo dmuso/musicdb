@@ -2,24 +2,41 @@
 
 <div class="piece columns">
   <div class="cover-image column col-3">
-    image could go here
+    cover image
   </div>
   <div class="column col-9">
     <table>
       <tr>
-        <th>Composer:</th>
-        <td>{% for composer in piece.composers.all %}
-        {{ composer }},
-        {% endfor %}
+        <th>Composer/s:</th>
+        <td>
+          {% for composer in piece.composers.all %}
+            {{ composer }}<br/>
+          {% endfor %}
         </td>
       </tr>
       <tr>
-        <th>Instrument:</th>
-        <td>{{ piece.instrument }}</td>
+        <th>Arranger/s:</th>
+        <td>
+          {% for arranger in piece.arrangers.all %}
+            {{ arranger }},
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <th>Instrument/s:</th>
+        <td>
+          {% for instrument in piece.instruments.all %}
+            {{ instrument }}<br/>
+          {% endfor %}
+        </td>
       </tr>
       <tr>
         <th>Category:</th>
-        <td>{{ piece.category }}</td>
+        <td>
+          {% for category in piece.categories.all %}
+            {{ category }},
+          {% endfor %}
+        </td>
       </tr>
       <tr>
         <th>Publisher: </th>
@@ -31,16 +48,8 @@
         <td>{{ piece.catalogue_number }}</td>
       </tr>
       <tr>
-        <th>Number of copies: </th>
-        <td>{{ piece.number_of_copies }}</td>
-      </tr>
-      <tr>
         <th>Location: </th>
         <td>{{ piece.location }}</td>
-      </tr>
-      <tr>
-        <th>ISBN: </th>
-        <td>{{ piece.isbn }}</td>
       </tr>
       <tr>
         <th>&nbsp;</th>
@@ -48,7 +57,11 @@
       </tr>
       <tr>
         <th>Grade: </th>
-        <td>{{ piece.grade }}</td>
+        <td>
+          {% for grade in piece.grades.all %}
+            {{ grade }},
+          {% endfor %}
+        </td>
       </tr>
       <tr>
         <th>Accompaniment: </th>
@@ -73,6 +86,18 @@
       <tr>
         <th>&nbsp;</th>
         <td>&nbsp;</td>
+      </tr>
+      <tr>
+        <th>Number of originals: </th>
+        <td>{{ piece.number_of_originals }}</td>
+      </tr>
+      <tr>
+        <th>Number of copies: </th>
+        <td>{{ piece.number_of_copies }}</td>
+      </tr>
+      <tr>
+        <th>ISBN: </th>
+        <td>{{ piece.isbn }}</td>
       </tr>
       <tr>
         <th>Notes: </th>

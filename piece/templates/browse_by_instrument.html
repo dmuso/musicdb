@@ -3,7 +3,7 @@
 <ul>
   {% for instrument in object_list %}
     <li>
-      <a href="/search?instrument={{ instrument.pk }}">{{ instrument }}</a>
+      <a href="/search?instrument={{ instrument.pk }}">{{ instrument.instrument_group.name }} - {{ instrument.name }}</a>
     </li>
   {% endfor %}
 </ul>
