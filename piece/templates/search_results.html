@@ -68,6 +68,71 @@
           >{{ publisher }}</option>
         {% endfor %}
       </select>
+      <br />
+      <label>Grades:</label>
+      <select name="grade">
+        <option> </option>
+        {% for grade in object_list.grades %}
+        <option value="{{ grade.pk }}" 
+          {% if object_list.grade_query|add:"0" == grade.pk %}
+            selected 
+          {% endif %}
+          >
+          {{ grade }}</option>
+        {% endfor %}
+      </select>
+      <br />
+      <label>Accompaniment:</label>
+      <select name="accompaniment">
+        <option> </option>
+        {% for accompaniment in object_list.accompaniments %}
+        <option value="{{ accompaniment.pk }}" 
+          {% if object_list.accompaniment_query|add:"0" == accompaniment.pk %}
+            selected
+            {% endif %}
+          >
+          {{ accompaniment }}</option>
+        {% endfor %}
+      </select>
+      <br />
+      <label>Ensemble Parts:</label>
+      <select name="ensemble_part">
+        <option> </option>
+        {% for ensemble_part in object_list.ensemble_parts %}
+        <option value="{{ ensemble_part.pk }}" 
+          {% if object_list.ensemble_part_query|add:"0" == ensemble_part.pk %}
+            selected
+          {% endif %}
+          >
+          {{ ensemble_part }}</option>
+        {% endfor %}
+      </select>
+      <br />
+      <label>Genre:</label>
+      <select name="genre_part">
+        <option> </option>
+        {% for genre in object_list.genres %}
+        <option value="{{ genre.pk }}" 
+          {% if object_list.genre_query|add:"0" == genre.pk %}
+            selected
+          {% endif %}
+          >
+          {{ genre }}</option>
+        {% endfor %}
+      </select>
+      <br />
+      <label>Status:</label>
+      <select name="status_part">
+        <option> </option>
+        {% for status in object_list.statuses %}
+        <option value="{{ status.pk }}" 
+          {% if object_list.status_query|add:"0" == status.pk %}
+            selected
+          {% endif %}
+          >
+          {{ status }}</option>
+        {% endfor %}
+      </select>
       <br/>
       <input type="submit" value="Search">
     </form>
