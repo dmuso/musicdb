@@ -1,7 +1,5 @@
 {% include 'partials/header.html' with heading='Welcome to Music DB' %}
 
-<form action="{% url 'search_results' %}" method="get">
-  <input id="search" name="query" type="text" placeholder="Search...">
-</form>
+{% include 'partials/search_subheader.html' with object_list=object_list %}
 
 {% include 'partials/footer.html' %}

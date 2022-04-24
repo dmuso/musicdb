@@ -4,13 +4,41 @@ from django.views.generic import TemplateView, ListView, DetailView
 from django.db.models import Q
 from .models import Category, EnsemblePart, Instrument, Composer, Arranger, Publisher, Piece, Grade, Genre, Status
 
-class HomePageView(LoginRequiredMixin, TemplateView):
+class HomePageView(LoginRequiredMixin, ListView):
   template_name='home.html'
+
+  def get_queryset(self):
+    return SearchHeader.get_queryset(self)
 
 class SearchResultsView(LoginRequiredMixin, ListView):
   model = Piece
   template_name = 'search_results.html'
-  
+
+  def get_queryset(self):
+    return SearchHeader.get_queryset(self)
+
+class BrowseInstrumentView(LoginRequiredMixin, ListView):
+  model = Instrument
+  template_name = 'browse_by_instrument.html'
+
+class BrowseComposerView(LoginRequiredMixin, ListView):
+  model = Composer
+  template_name = 'browse_by_composer.html'
+
+class BrowseCategoryView(LoginRequiredMixin, ListView):
+  model = Category
+  template_name = 'browse_by_category.html'
+
+class BrowsePublisherView(LoginRequiredMixin, ListView):
+  model = Publisher
+  template_name = 'browse_by_publisher.html'
+
+class PieceDetailView(LoginRequiredMixin, DetailView):
+  model = Piece
+  template_name = 'view_piece.html'
+
+class SearchHeader():
+  @staticmethod
   def get_queryset(self):
     instrument_query = self.request.GET.get('instrument')
     composer_query = self.request.GET.get('composer')
@@ -80,24 +108,4 @@ class SearchResultsView(LoginRequiredMixin, ListView):
       query=query,
     )
     return object_list
-
-class BrowseInstrumentView(LoginRequiredMixin, ListView):
-  model = Instrument
-  template_name = 'browse_by_instrument.html'
-
-class BrowseComposerView(LoginRequiredMixin, ListView):
-  model = Composer
-  template_name = 'browse_by_composer.html'
-
-class BrowseCategoryView(LoginRequiredMixin, ListView):
-  model = Category
-  template_name = 'browse_by_category.html'
-
-class BrowsePublisherView(LoginRequiredMixin, ListView):
-  model = Publisher
-  template_name = 'browse_by_publisher.html'
-
-class PieceDetailView(LoginRequiredMixin, DetailView):
-  model = Piece
-  template_name = 'view_piece.html'
 
