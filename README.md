@@ -12,6 +12,9 @@ A simple Django app to manage a sheet music database.
 
 ## Common Commands
 
+    # Run tests
+    docker-compose run test
+
     # Generate migrations
     docker-compose run app python manage.py makemigrations piece
 

@@ -79,17 +79,11 @@ with open(CSV_PATH, newline='') as csvfile:
         print(f"Create Publisher: name={publisher_field}")
 
     location_field = row[29].strip().lstrip()
-    location = None
-    try:
-      location = Location.objects.get(name=location_field)
-      print(f"Found Location: name={location}")
-    except Location.DoesNotExist:
-      if location_field == "":
-        location = location_unknown
-        print(f"Location Unknown.")
-      else:
-        location = Location.objects.create(name=location_field)
-        print(f"Create Location: name={location_field}")
+    locations = Location.parse_str_locations(locations=location_field)
+    print(f"Parsed locations: {locations}")
+    for location in locations:
+      location.save()
+      print(f"Saved Location name={location}")
 
     status_field = row[30].strip().lstrip()
     status = None
@@ -196,7 +190,7 @@ with open(CSV_PATH, newline='') as csvfile:
         print(f"Found Genre: name={genre}")
       except Genre.DoesNotExist:
         genre = Genre.objects.create(name=genre_field)
-        print(f"Create Location: name={genre_field}")
+        print(f"Create Genre: name={genre_field}")
 
     medley_field = row[23].strip().lstrip()
     if medley_field == "" or medley_field == "N" or medley_field == "No":
@@ -255,7 +249,6 @@ with open(CSV_PATH, newline='') as csvfile:
     except Piece.DoesNotExist:
       piece = Piece(
         publisher=publisher,
-        location=location,
         catalogue_number=catalogue_number,
         number_of_copies=number_of_copies,
         number_of_originals=number_of_originals,
@@ -280,6 +273,9 @@ with open(CSV_PATH, newline='') as csvfile:
       print(f"   Piece instruments: {instruments}")
       for i in instruments:
         piece.instruments.add(i)
+      print(f"   Piece locations: {locations}")
+      for loc in locations:
+        piece.locations.add(loc)
       print(f"   Piece categories: {categories}")
       for cat in categories:
         piece.categories.add(cat)

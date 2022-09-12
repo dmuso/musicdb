@@ -1,3 +1,4 @@
+from os import stat
 from django.db import models
 from django.db.models.deletion import PROTECT
 import re
@@ -33,10 +34,10 @@ class Instrument(models.Model):
     #   return self.instrument_group.name + ' - ' + self.name
     # except InstrumentGroup.DoesNotExist:
     return self.name
-  
+
   @staticmethod
   def parse_str_instrument_with_abbr(instrument_with_abbr: str) -> object:
-    match = re.search('\((?P<abbreviation>\w+)\) (?P<name>[\w ]+)', instrument_with_abbr)
+    match = re.search('\((?P<abbreviation>\w+)\) (?P<name>[\w -]+)', instrument_with_abbr)
     instrument = None
     if match is not None:
       try:
@@ -126,6 +127,21 @@ class Location(models.Model):
   def __str__(self) -> str:
     return self.name
 
+  @staticmethod
+  def parse_str_locations(locations: str) -> object:
+    locations_list = locations.split(',')
+    locations_result = []
+    for loc in locations_list:
+      loc = loc.strip().lstrip()
+      try:
+        location = Location.objects.get(name=loc)
+      except Location.DoesNotExist:
+        location = Location(
+          name = loc,
+        )
+      locations_result.append(location)
+    return locations_result
+
 # ---
 
 class Composer(models.Model):
@@ -140,7 +156,7 @@ class Composer(models.Model):
 
   @staticmethod
   def parse_str_composer_full_name(full_name: str) -> object:
-    match = re.search('(?P<last_name>\w+), (?P<first_name>[\w ()]+)', full_name)
+    match = re.search('(?P<last_name>[\w .\-\']+), (?P<first_name>[\w .\-\']+)', full_name)
     composer = None
     if match is not None:
       try:
@@ -150,6 +166,11 @@ class Composer(models.Model):
           first_name = match.group('first_name'),
           last_name = match.group('last_name')
         )
+    else:
+      composer = Composer(
+        first_name = "_",
+        last_name = full_name
+      )
     return composer
 
   @staticmethod
@@ -319,7 +340,7 @@ class Piece(models.Model):
   instruments = models.ManyToManyField(Instrument)
   categories = models.ManyToManyField(Category)
   publisher = models.ForeignKey(Publisher, on_delete=PROTECT)
-  location = models.ForeignKey(Location, on_delete=PROTECT)
+  locations = models.ManyToManyField(Location)
 
   # image = models.ImageField()
 
@@ -362,6 +383,7 @@ class Piece(models.Model):
   # can't seem to delete these!
   instrument = models.ForeignKey(Instrument, related_name='old_instrument', on_delete=PROTECT, null=True, blank=True)
   category = models.ForeignKey(Category, related_name='old_category', on_delete=PROTECT, null=True, blank=True)
+  location = models.ForeignKey(Location, related_name='old_location', on_delete=PROTECT, null=True, blank=True)
 
   class Meta:
     ordering = ['instrument', 'category', 'catalogue_number', 'title']
@@ -370,23 +392,18 @@ class Piece(models.Model):
     # return self.catalogue_number + " - " + self.title
     return self.title
 
-  def last_cat_number(self) -> str:
-    if hasattr(self, 'instrument') and hasattr(self, 'category'):
-      try:
-        return Piece.objects.filter(instrument=self.instrument, category=self.category).order_by("-created_at")[0:1].get().catalogue_number
-      except self.DoesNotExist:
-        return ""
-    else:
-      return ""
+  @staticmethod
+  def last_cat_number(instrument: Instrument, category: Category) -> str:
+    try:
+      return Piece.objects.filter(instruments=instrument, categories=category).order_by("-created_at")[0:1].get().catalogue_number
+    except Piece.DoesNotExist:
+      return None
 
-  def suggested_cat_number(self) -> str:
-    if hasattr(self, 'instrument') and hasattr(self, 'category'):
-      catalogue_number = self.last_cat_number()
-      if catalogue_number != "":
-        number = int(catalogue_number.split(".")[1])
-        number += 1
-      else:
-        number = 1
-      return self.instrument.abbreviation + self.category.code + '.' + f'{number:04}'
-    else:
-      return ""
+  @staticmethod
+  def suggested_cat_number(instrument: Instrument, category: Category) -> str:
+    catalogue_number = Piece.last_cat_number(instrument, category)
+    number = 1
+    if catalogue_number is not None:
+      number = int(catalogue_number.split(".")[1])
+      number += 1
+    return instrument.abbreviation + category.code + '.' + f'{number:04}'

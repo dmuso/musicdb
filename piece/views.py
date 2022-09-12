@@ -83,6 +83,8 @@ class SearchHeader():
         Q(composers__last_name__icontains=query)
       )
 
+    queryset = queryset.order_by('title')
+
     object_list = dict(
       search_results=queryset,
       categories=Category.objects.all(),
