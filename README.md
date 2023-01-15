@@ -12,6 +12,12 @@ A simple Django app to manage a sheet music database.
 
 ## Common Commands
 
+    # Start app server
+    docker-compose up app
+
+    # Start standalone database server
+    docker-compose up -d db
+
     # Run tests
     docker-compose run test
 
@@ -23,3 +29,9 @@ A simple Django app to manage a sheet music database.
 
     # Console CLI
     docker-compose run app python manage.py shell
+
+    # Create superuser
+    docker-compose run app python manage.py createsuperuser
+
+    # Executing the import script
+    docker-compose exec -T app python manage.py shell < import-all.py

@@ -16,16 +16,16 @@
       {% endfor %}
     </select>
     <br />
-    <label>Categories:</label>
-    <select name="category">
+    <label>Shelf Locations:</label>
+    <select name="shelf_location">
       <option> </option>
-      {% for category in object_list.categories %}
-      <option value="{{ category.pk }}"
-        {% if object_list.category_query|add:"0" == category.pk %}
+      {% for shelf_location in object_list.shelf_locations %}
+      <option value="{{ shelf_location.pk }}"
+        {% if object_list.shelf_location_query|add:"0" == shelf_location.pk %}
           selected
         {% endif %}
         >
-        {{ category }}</option>
+        {{ shelf_location }}</option>
       {% endfor %}
     </select>
     <br />
@@ -108,7 +108,7 @@
     </select>
     <br />
     <label>Genre:</label>
-    <select name="genre_part">
+    <select name="genre">
       <option> </option>
       {% for genre in object_list.genres %}
       <option value="{{ genre.pk }}"
@@ -121,7 +121,7 @@
     </select>
     <br />
     <label>Status:</label>
-    <select name="status_part">
+    <select name="status">
       <option> </option>
       {% for status in object_list.statuses %}
       <option value="{{ status.pk }}"

@@ -31,10 +31,10 @@
         </td>
       </tr>
       <tr>
-        <th>Category:</th>
+        <th>Shelf Location:</th>
         <td>
-          {% for category in piece.categories.all %}
-            {{ category }},
+          {% for shelf_location in piece.shelf_locations.all %}
+            {{ shelf_location }},
           {% endfor %}
         </td>
       </tr>

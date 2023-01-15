@@ -17,9 +17,9 @@
           {% for instrument in piece.instruments.all %}
             {{ instrument }},
           {% endfor %}
-          <b>Category: </b>
-          {% for category in piece.categories.all %}
-            {{ category }},
+          <b>Shelf Location: </b>
+          {% for shelf_location in piece.shelf_locations.all %}
+            {{ shelf_location }},
           {% endfor %}
         </em>
       </div>

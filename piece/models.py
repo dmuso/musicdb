@@ -74,36 +74,36 @@ class Instrument(models.Model):
 
 # ---
 
-class Category(models.Model):
+class ShelfLocation(models.Model):
   name = models.CharField(max_length=240)
   code = models.CharField(max_length=2)
 
   class Meta:
     ordering = ['code', 'name']
-    verbose_name_plural = "Categories"
+    verbose_name_plural = "Shelf Locations"
 
   def __str__(self) -> str:
     return self.name
 
   @staticmethod
-  def parse_str_category_with_code(category_with_code: str) -> object:
-    match = re.search('\((?P<code>\w+)\) (?P<name>[\w ()]+)', category_with_code)
-    category = None
+  def parse_str_shelf_location_with_code(shelf_location_with_code: str) -> object:
+    match = re.search('\((?P<code>\w+)\) (?P<name>[\w ()]+)', shelf_location_with_code)
+    shelf_location = None
     if match is not None:
       try:
-        category = Category.objects.get(name=match.group('name'))
-      except Category.DoesNotExist:
-        category = Category(
+        shelf_location = ShelfLocation.objects.get(name=match.group('name'))
+      except ShelfLocation.DoesNotExist:
+        shelf_location = ShelfLocation(
           code = match.group('code'),
           name = match.group('name')
         )
-    return category
+    return shelf_location
 
   @staticmethod
-  def parse_str_categories(categories: str) -> object:
-    categories_list = categories.split(',')
-    categories_list = [Category.parse_str_category_with_code(category) for category in categories_list]
-    return [category for category in categories_list if category is not None]
+  def parse_str_shelf_locations(shelf_locations: str) -> object:
+    shelf_locations_list = shelf_locations.split(',')
+    shelf_locations_list = [ShelfLocation.parse_str_shelf_location_with_code(shelf_location) for shelf_location in shelf_locations_list]
+    return [shelf_location for shelf_location in shelf_locations_list if shelf_location is not None]
 
 # ---
 
@@ -144,6 +144,25 @@ class Location(models.Model):
 
 # ---
 
+def parse_full_name(full_name: str) -> object:
+  first_name = None
+  last_name = None
+  match = re.search('(?P<last_name>[\w .\-\']+), (?P<first_name>[\w .\-\']+)', full_name)
+  if match is not None:
+    if not match.group('first_name') or not match.group('first_name').strip():
+      first_name = "_"
+    else:
+      first_name = match.group('first_name').strip()
+    if not match.group('last_name') or not match.group('last_name').strip():
+      last_name = "_"
+    else:
+      last_name = match.group('last_name').strip()
+  else:      
+    first_name = "_"
+    last_name = full_name.strip()
+
+  return (first_name, last_name)
+
 class Composer(models.Model):
   first_name = models.CharField(max_length=240)
   last_name = models.CharField(max_length=240)
@@ -156,25 +175,21 @@ class Composer(models.Model):
 
   @staticmethod
   def parse_str_composer_full_name(full_name: str) -> object:
-    match = re.search('(?P<last_name>[\w .\-\']+), (?P<first_name>[\w .\-\']+)', full_name)
     composer = None
-    if match is not None:
-      try:
-        composer = Composer.objects.get(first_name=match.group('first_name'), last_name=match.group('last_name'))
-      except Composer.DoesNotExist:
-        composer = Composer(
-          first_name = match.group('first_name'),
-          last_name = match.group('last_name')
-        )
-    else:
+    first_name, last_name = parse_full_name(full_name)
+    try:
+      composer = Composer.objects.get(first_name__iexact=first_name.lower(), last_name__iexact=last_name.lower())
+    except Composer.DoesNotExist:
       composer = Composer(
-        first_name = "_",
-        last_name = full_name
+        first_name = first_name,
+        last_name = last_name
       )
     return composer
 
   @staticmethod
   def parse_str_composers(composers: str) -> object:
+    if not composers or not composers.strip():
+      return []
     composers_list = composers.split('/')
     composers_list = [Composer.parse_str_composer_full_name(composer) for composer in composers_list]
     return [composer for composer in composers_list if composer is not None]
@@ -194,16 +209,16 @@ class Arranger(models.Model):
 
   @staticmethod
   def parse_str_arranger_full_name(full_name: str) -> object:
-    match = re.search('(?P<last_name>\w+), (?P<first_name>[\w ()]+)', full_name)
     arranger = None
-    if match is not None:
-      try:
-        arranger = Arranger.objects.get(first_name=match.group('first_name'), last_name=match.group('last_name'))
-      except Arranger.DoesNotExist:
-        arranger = Arranger(
-          first_name = match.group('first_name'),
-          last_name = match.group('last_name')
-        )
+    first_name, last_name = parse_full_name(full_name)
+
+    try:
+      arranger = Arranger.objects.get(first_name__iexact=first_name.lower(), last_name__iexact=last_name.lower())
+    except Arranger.DoesNotExist:
+      arranger = Arranger(
+        first_name = first_name,
+        last_name = last_name
+      )
     return arranger
 
   @staticmethod
@@ -230,7 +245,7 @@ class EnsemblePart(models.Model):
     for ep in ensemble_parts_list:
       ep = ep.strip().lstrip()
       try:
-        ensemble_part = EnsemblePart.objects.get(name=ep)
+        ensemble_part = EnsemblePart.objects.get(name__iexact=ep.lower())
       except EnsemblePart.DoesNotExist:
         ensemble_part = EnsemblePart(
           name = ep,
@@ -322,6 +337,20 @@ class Genre(models.Model):
   def __str__(self) -> str:
     return self.name
 
+  @staticmethod
+  def parse_str_genres(genres: str) -> object:
+    genres_list = genres.split(',')
+    genres_result = []
+    for g in genres_list:
+      g = g.strip().lstrip()
+      try:
+        genre = Genre.objects.get(name__iexact=g.lower())
+      except Genre.DoesNotExist:
+        genre = Genre(
+          name = g,
+        )
+      genres_result.append(genre)
+    return genres_result
 # ---
 
 class Status(models.Model):
@@ -338,7 +367,7 @@ class Status(models.Model):
 
 class Piece(models.Model):
   instruments = models.ManyToManyField(Instrument)
-  categories = models.ManyToManyField(Category)
+  shelf_locations = models.ManyToManyField(ShelfLocation)
   publisher = models.ForeignKey(Publisher, on_delete=PROTECT)
   locations = models.ManyToManyField(Location)
 
@@ -351,7 +380,7 @@ class Piece(models.Model):
   title = models.CharField(max_length=240)
   composers = models.ManyToManyField(Composer, blank=True)
   arrangers = models.ManyToManyField(Arranger, blank=True)
-  isbn = models.CharField(max_length=50, null=True, blank=True)
+  isbn = models.CharField(max_length=250, null=True, blank=True)
   grades = models.ManyToManyField(Grade, blank=True)
  
   accompaniment = models.ManyToManyField(Instrument, related_name='instrument_accompaniment', blank=True)
@@ -365,7 +394,7 @@ class Piece(models.Model):
   sacred = models.BooleanField(default=False, null=True, blank=True)
   movements = models.IntegerField(default=1, null=True, blank=True)
   performance_time = models.DurationField(null=True, blank=True)
-  genre = models.ForeignKey(Genre, on_delete=PROTECT, null=True, blank=True)
+  genres = models.ManyToManyField(Genre, blank=True)
   medley = models.BooleanField(default=False, null=True, blank=True)
 
   related_file = models.TextField(null=True, blank=True)
@@ -380,30 +409,25 @@ class Piece(models.Model):
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
 
-  # can't seem to delete these!
-  instrument = models.ForeignKey(Instrument, related_name='old_instrument', on_delete=PROTECT, null=True, blank=True)
-  category = models.ForeignKey(Category, related_name='old_category', on_delete=PROTECT, null=True, blank=True)
-  location = models.ForeignKey(Location, related_name='old_location', on_delete=PROTECT, null=True, blank=True)
-
-  class Meta:
-    ordering = ['instrument', 'category', 'catalogue_number', 'title']
+  # class Meta:
+  #   ordering = ['instrument', 'shelf_location', 'catalogue_number', 'title']
 
   def __str__(self) -> str:
     # return self.catalogue_number + " - " + self.title
     return self.title
 
   @staticmethod
-  def last_cat_number(instrument: Instrument, category: Category) -> str:
+  def last_cat_number(instrument: Instrument, shelf_location: ShelfLocation) -> str:
     try:
-      return Piece.objects.filter(instruments=instrument, categories=category).order_by("-created_at")[0:1].get().catalogue_number
+      return Piece.objects.filter(instruments=instrument, shelf_locations=shelf_location).order_by("-created_at")[0:1].get().catalogue_number
     except Piece.DoesNotExist:
       return None
 
   @staticmethod
-  def suggested_cat_number(instrument: Instrument, category: Category) -> str:
-    catalogue_number = Piece.last_cat_number(instrument, category)
+  def suggested_cat_number(instrument: Instrument, shelf_location: ShelfLocation) -> str:
+    catalogue_number = Piece.last_cat_number(instrument, shelf_location)
     number = 1
     if catalogue_number is not None:
       number = int(catalogue_number.split(".")[1])
       number += 1
-    return instrument.abbreviation + category.code + '.' + f'{number:04}'
+    return instrument.abbreviation + shelf_location.code + '.' + f'{number:04}'

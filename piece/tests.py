@@ -1,9 +1,9 @@
 from django.test import TestCase
-from .models import InstrumentGroup, Location, Piece, Category, Instrument, Publisher, Composer, Arranger, Grade, EnsemblePart
+from .models import InstrumentGroup, Location, Piece, ShelfLocation, Instrument, Publisher, Composer, Arranger, Grade, EnsemblePart, Genre
 
 class PieceTestCase(TestCase):
   def setUp(self):
-    Category.objects.create(name="AMEB", code="01")
+    ShelfLocation.objects.create(name="AMEB", code="01")
     instrument_group = InstrumentGroup.objects.create(name="Woodwind")
     Instrument.objects.create(name="Flute", abbreviation="FL", instrument_group=instrument_group)
     Instrument.objects.create(name="Keyboard", abbreviation="KB", instrument_group=instrument_group)
@@ -16,45 +16,45 @@ class PieceTestCase(TestCase):
     Location.objects.create(name="Test Location")
 
   def test_suggested_cat_number_starts_at_one(self):
-    category = Category.objects.get(name="AMEB")
+    shelf_location = ShelfLocation.objects.get(name="AMEB")
     instrument = Instrument.objects.get(name="Flute")
 
-    self.assertEqual(Piece.suggested_cat_number(instrument, category), instrument.abbreviation + category.code + ".0001")
+    self.assertEqual(Piece.suggested_cat_number(instrument, shelf_location), instrument.abbreviation + shelf_location.code + ".0001")
 
   def test_suggested_cat_number_increments(self):
-    category = Category.objects.get(name="AMEB")
+    shelf_location = ShelfLocation.objects.get(name="AMEB")
     instrument = Instrument.objects.get(name="Flute")
     publisher = Publisher.objects.get(name="Test Publisher")
     location = Location.objects.get(name="Test Location")
 
     piece_first = Piece.objects.create(
       title="Test Piece",
-      catalogue_number=instrument.abbreviation + category.code + ".0001",
+      catalogue_number=instrument.abbreviation + shelf_location.code + ".0001",
       publisher=publisher
     )
     piece_first.save()
     piece_first.instruments.add(instrument)
-    piece_first.categories.add(category)
+    piece_first.shelf_locations.add(shelf_location)
     piece_first.locations.add(location)
-    self.assertEqual(Piece.suggested_cat_number(instrument, category), instrument.abbreviation + category.code + ".0002")
+    self.assertEqual(Piece.suggested_cat_number(instrument, shelf_location), instrument.abbreviation + shelf_location.code + ".0002")
 
   def test_last_cat_number(self):
-    category = Category.objects.get(name="AMEB")
+    shelf_location = ShelfLocation.objects.get(name="AMEB")
     instrument = Instrument.objects.get(name="Flute")
     publisher = Publisher.objects.get(name="Test Publisher")
     location = Location.objects.get(name="Test Location")
 
     piece_first = Piece.objects.create(
       title="Test Piece",
-      catalogue_number=instrument.abbreviation + category.code + ".0001",
+      catalogue_number=instrument.abbreviation + shelf_location.code + ".0001",
       publisher=publisher
     )
     piece_first.save()
     piece_first.instruments.add(instrument)
-    piece_first.categories.add(category)
+    piece_first.shelf_locations.add(shelf_location)
     piece_first.locations.add(location)
 
-    self.assertEqual(Piece.last_cat_number(instrument, category), instrument.abbreviation + category.code + ".0001")
+    self.assertEqual(Piece.last_cat_number(instrument, shelf_location), instrument.abbreviation + shelf_location.code + ".0001")
 
   def test_parse_str_instrument_with_abbr(self):
     instrument_with_abbr = "(GT) Guitar"
@@ -80,20 +80,20 @@ class PieceTestCase(TestCase):
     self.assertEqual(instruments_list[1].abbreviation, "MP")
     self.assertEqual(instruments_list[1].name, "Multi-Percussion")
 
-  def test_parse_str_category_with_code(self):
-    category_with_code = "(10) AMEB"
-    category = Category.parse_str_category_with_code(category_with_code=category_with_code)
-    self.assertEqual(category.code, "01")
-    self.assertEqual(category.name, "AMEB")
+  def test_parse_str_shelf_location_with_code(self):
+    shelf_location_with_code = "(10) AMEB"
+    shelf_location = ShelfLocation.parse_str_shelf_location_with_code(shelf_location_with_code=shelf_location_with_code)
+    self.assertEqual(shelf_location.code, "01")
+    self.assertEqual(shelf_location.name, "AMEB")
 
-  def test_parse_str_categories(self):
-    categories = "(16) Solo (Single), (20) Duet"
-    categories_list = Category.parse_str_categories(categories=categories)
-    self.assertEqual(len(categories_list), 2)
-    self.assertEqual(categories_list[0].code, "16")
-    self.assertEqual(categories_list[0].name, "Solo (Single)")
-    self.assertEqual(categories_list[1].code, "20")
-    self.assertEqual(categories_list[1].name, "Duet")
+  def test_parse_str_shelf_locations(self):
+    shelf_locations = "(16) Solo (Single), (20) Duet"
+    shelf_locations_list = ShelfLocation.parse_str_shelf_locations(shelf_locations=shelf_locations)
+    self.assertEqual(len(shelf_locations_list), 2)
+    self.assertEqual(shelf_locations_list[0].code, "16")
+    self.assertEqual(shelf_locations_list[0].name, "Solo (Single)")
+    self.assertEqual(shelf_locations_list[1].code, "20")
+    self.assertEqual(shelf_locations_list[1].name, "Duet")
 
   def test_parse_str_locations(self):
     locations = "SS - Music 2, SS - Music 5"
@@ -108,17 +108,43 @@ class PieceTestCase(TestCase):
     self.assertEqual(composer.first_name, "John")
     self.assertEqual(composer.last_name, "Smith")
 
+  def test_parse_str_composer_full_name_reuses(self):
+    full_name = "Smith, John"
+    composer1 = Composer.parse_str_composer_full_name(full_name=full_name)
+    composer2 = Composer.parse_str_composer_full_name(full_name=full_name)
+    self.assertEqual(composer1.pk, composer2.pk)
+
   def test_parse_str_composer_band(self):
     full_name = "The Beatles"
     composer = Composer.parse_str_composer_full_name(full_name=full_name)
     self.assertEqual(composer.first_name, "_")
     self.assertEqual(composer.last_name, "The Beatles")
 
+  def test_parse_str_composer_band_reuses(self):
+    full_name = "The Beatles"
+    composer1 = Composer.parse_str_composer_full_name(full_name=full_name)
+    composer1.save()
+    composer2 = Composer.parse_str_composer_full_name(full_name=full_name)
+    self.assertEqual(composer1.pk, composer2.pk)
+
+  def test_parse_str_composer_band_reuses_case(self):
+    full_name1 = "The Beatles"
+    full_name2 = "the beatles"
+    composer1 = Composer.parse_str_composer_full_name(full_name=full_name1)
+    composer1.save()
+    composer2 = Composer.parse_str_composer_full_name(full_name=full_name2)
+    self.assertEqual(composer1.pk, composer2.pk)
+
   def test_parse_str_composer_band_one_word(self):
     full_name = "Beatles"
     composer = Composer.parse_str_composer_full_name(full_name=full_name)
     self.assertEqual(composer.first_name, "_")
     self.assertEqual(composer.last_name, "Beatles")
+
+  def test_parse_str_composers_empty(self):
+    composers = ""
+    composers_list = Composer.parse_str_composers(composers=composers)
+    self.assertEqual(len(composers_list), 0)
 
   def test_parse_str_composers_basic(self):
     composers = "Smith, John/Jones, Mary"
@@ -128,6 +154,21 @@ class PieceTestCase(TestCase):
     self.assertEqual(composers_list[0].last_name, "Smith")
     self.assertEqual(composers_list[1].first_name, "Mary")
     self.assertEqual(composers_list[1].last_name, "Jones")
+
+  def test_parse_str_composers_basic_reuses(self):
+    composers = "Smith, John/Jones, Mary"
+    composers_list1 = Composer.parse_str_composers(composers=composers)
+    composers_list2 = Composer.parse_str_composers(composers=composers)
+    self.assertEqual(len(composers_list1), 2)
+    self.assertEqual(composers_list1[0].pk, composers_list1[1].pk)
+    self.assertEqual(composers_list2[0].pk, composers_list2[1].pk)
+
+  def test_parse_str_composers_basic_reuses_case(self):
+    composers1 = "Smith, John/Jones, Mary"
+    composers2 = "smith , john "
+    composers_list1 = Composer.parse_str_composers(composers=composers1)
+    composers_list2 = Composer.parse_str_composers(composers=composers2)
+    self.assertEqual(composers_list1[0].pk, composers_list2[0].pk)
 
   def test_parse_str_composers_apos(self):
     composers = "Smith, John/O'Reilly, Mary"
@@ -269,4 +310,12 @@ class PieceTestCase(TestCase):
     self.assertEqual(ensemble_parts_list[0].name, '4 Part')
     self.assertEqual(ensemble_parts_list[1].name, 'SATB')
     self.assertEqual(ensemble_parts_list[2].name, 'Carols for Choirs')
+
+  def test_parse_str_genres(self):
+    genres = "Ballet, Classical, Romantic Period"
+    genres_list = Genre.parse_str_genres(genres=genres)
+    self.assertEqual(len(genres_list), 3)
+    self.assertEqual(genres_list[0].name, 'Ballet')
+    self.assertEqual(genres_list[1].name, 'Classical')
+    self.assertEqual(genres_list[2].name, 'Romantic Period')
 

@@ -1,0 +1,11 @@
+{% include 'partials/header.html' with heading="Browse by Shelf Location" %}
+
+<ul>
+  {% for shelf_location in object_list %}
+  <li>
+    <a href="/search?shelf_location={{ shelf_location.pk }}">{{ shelf_location }}</a>
+  </li>
+  {% endfor %}
+</ul>
+
+{% include 'partials/footer.html' %}

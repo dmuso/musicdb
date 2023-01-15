@@ -2,7 +2,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, ListView, DetailView
 from django.db.models import Q
-from .models import Category, EnsemblePart, Instrument, Composer, Arranger, Publisher, Piece, Grade, Genre, Status
+from .models import ShelfLocation, EnsemblePart, Instrument, Composer, Arranger, Publisher, Piece, Grade, Genre, Status
 
 class HomePageView(LoginRequiredMixin, ListView):
   template_name='home.html'
@@ -25,9 +25,9 @@ class BrowseComposerView(LoginRequiredMixin, ListView):
   model = Composer
   template_name = 'browse_by_composer.html'
 
-class BrowseCategoryView(LoginRequiredMixin, ListView):
-  model = Category
-  template_name = 'browse_by_category.html'
+class BrowseShelfLocationView(LoginRequiredMixin, ListView):
+  model = ShelfLocation
+  template_name = 'browse_by_shelf_location.html'
 
 class BrowsePublisherView(LoginRequiredMixin, ListView):
   model = Publisher
@@ -43,7 +43,7 @@ class SearchHeader():
     instrument_query = self.request.GET.get('instrument')
     composer_query = self.request.GET.get('composer')
     arranger_query = self.request.GET.get('arranger')
-    category_query = self.request.GET.get('category')
+    shelf_location_query = self.request.GET.get('shelf_location')
     publisher_query = self.request.GET.get('publisher')
     grade_query = self.request.GET.get('grade')
     accompaniment_query = self.request.GET.get('accompaniment')
@@ -55,8 +55,8 @@ class SearchHeader():
     queryset = Piece.objects.all()
     if instrument_query:
       queryset = queryset.filter(instruments=instrument_query)
-    if category_query:
-      queryset = queryset.filter(categories=category_query)
+    if shelf_location_query:
+      queryset = queryset.filter(shelf_locations=shelf_location_query)
     if composer_query:
       queryset = queryset.filter(composers=composer_query)
     if arranger_query:
@@ -70,7 +70,7 @@ class SearchHeader():
     if ensemble_part_query:
       queryset = queryset.filter(ensemble_parts=ensemble_part_query)
     if genre_query:
-      queryset = queryset.filter(genre=genre_query)
+      queryset = queryset.filter(genres=genre_query)
     if status_query:
       queryset = queryset.filter(status=status_query)
     if query:
@@ -87,8 +87,8 @@ class SearchHeader():
 
     object_list = dict(
       search_results=queryset,
-      categories=Category.objects.all(),
-      category_query=category_query,
+      shelf_locations=ShelfLocation.objects.all(),
+      shelf_location_query=shelf_location_query,
       composers=Composer.objects.all(),
       composer_query=composer_query,
       arrangers=Arranger.objects.all(),

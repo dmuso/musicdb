@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Composer, Location, Piece, InstrumentGroup, Instrument, Category, Publisher, Genre, Arranger, Grade, Status, EnsemblePart
+from .models import Composer, Location, Piece, InstrumentGroup, Instrument, ShelfLocation, Publisher, Genre, Arranger, Grade, Status, EnsemblePart
 
 admin.site.register(Piece)
 admin.site.register(InstrumentGroup)
 admin.site.register(Instrument)
-admin.site.register(Category)
+admin.site.register(ShelfLocation)
 admin.site.register(Publisher)
 admin.site.register(Location)
 admin.site.register(Composer)
