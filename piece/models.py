@@ -87,7 +87,7 @@ class ShelfLocation(models.Model):
 
   @staticmethod
   def parse_str_shelf_location_with_code(shelf_location_with_code: str) -> object:
-    match = re.search('\((?P<code>\w+)\) (?P<name>[\w ()]+)', shelf_location_with_code)
+    match = re.search('\((?P<code>\w+)\) (?P<name>[\w \/\-()]+)', shelf_location_with_code)
     shelf_location = None
     if match is not None:
       try:

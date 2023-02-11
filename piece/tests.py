@@ -86,6 +86,18 @@ class PieceTestCase(TestCase):
     self.assertEqual(shelf_location.code, "01")
     self.assertEqual(shelf_location.name, "AMEB")
 
+  def test_parse_str_shelf_location_with_code_and_slash(self):
+    shelf_location_with_code = "(05) Jazz/Blues"
+    shelf_location = ShelfLocation.parse_str_shelf_location_with_code(shelf_location_with_code=shelf_location_with_code)
+    self.assertEqual(shelf_location.code, "05")
+    self.assertEqual(shelf_location.name, "Jazz/Blues")
+
+  def test_parse_str_shelf_location_with_code_and_dash(self):
+    shelf_location_with_code = "(13) CD-ROM Library"
+    shelf_location = ShelfLocation.parse_str_shelf_location_with_code(shelf_location_with_code=shelf_location_with_code)
+    self.assertEqual(shelf_location.code, "13")
+    self.assertEqual(shelf_location.name, "CD-ROM Library")
+
   def test_parse_str_shelf_locations(self):
     shelf_locations = "(16) Solo (Single), (20) Duet"
     shelf_locations_list = ShelfLocation.parse_str_shelf_locations(shelf_locations=shelf_locations)
