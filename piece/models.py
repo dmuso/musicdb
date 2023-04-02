@@ -367,6 +367,7 @@ class Status(models.Model):
 
 class Piece(models.Model):
   instruments = models.ManyToManyField(Instrument)
+  instruments_secondary = models.ManyToManyField(Instrument, related_name='instruments_secondary', blank=True)
   shelf_locations = models.ManyToManyField(ShelfLocation)
   publisher = models.ForeignKey(Publisher, on_delete=PROTECT)
   locations = models.ManyToManyField(Location)

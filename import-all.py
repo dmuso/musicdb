@@ -12,11 +12,19 @@ from piece.models import Composer, Arranger, Location, Piece, InstrumentGroup, I
 
 CSV_PATH = './import-all.csv'
 
+# convert column letter to number
+def c(letter):
+    number = 0
+    for char in letter:
+        number = number * 26 + ord(char.upper()) - ord('A') + 1
+    return number - 1
+
 COL = {
   'CATALOGUE_NUMBER': 0,
   'SHORT_NO': 1,
   'INSTRUMENT_GROUP': 2,
-  'INSTRUMENT': 3,
+  'INSTRUMENT': c('AN'),
+  'INSTRUMENT_SECONDARY': c('AO'),
   'SHELF_LOCATION': 4,
   'VOLUME_NO': 5,
   'VOCAL_ARRANGEMENT': 6,
@@ -92,6 +100,16 @@ with open(CSV_PATH, newline='') as csvfile:
       print(f"Instrument '{instrument}' has been given Instrument Group '{instrument_group}'")
       instrument.save()
       print(f"Saved Instrument name={instrument}")
+
+    instrument_secondary_field = row[COL['INSTRUMENT_SECONDARY']].strip().lstrip()
+    instruments_secondary = Instrument.parse_str_instruments(instruments=instrument_secondary_field)
+    print(f"Parsed Instruments Secondary: {instruments_secondary}")
+    for instrument in instruments_secondary:
+      if instrument.pk is None:
+        instrument.instrument_group = instrument_group
+        print(f"Instrument '{instrument}' has been given Instrument Group '{instrument_group}'")
+        instrument.save()
+        print(f"Saved Instrument name={instrument}")
 
     shelf_location_field = row[COL['SHELF_LOCATION']].strip().lstrip()
     shelf_locations = ShelfLocation.parse_str_shelf_locations(shelf_locations=shelf_location_field)
@@ -308,6 +326,9 @@ with open(CSV_PATH, newline='') as csvfile:
       print(f"   Piece instruments: {instruments}")
       for i in instruments:
         piece.instruments.add(i)
+      print(f"   Piece instruments secondary: {instruments_secondary}")
+      for i in instruments_secondary:
+        piece.instruments_secondary.add(i)
       print(f"   Piece locations: {locations}")
       for loc in locations:
         piece.locations.add(loc)
