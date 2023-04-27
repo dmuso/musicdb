@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls import include
 
-from .views import HomePageView, SearchResultsView, BrowseInstrumentView, BrowseComposerView, BrowseShelfLocationView, BrowsePublisherView, PieceDetailView
+from .views import HomePageView, SearchResultsView, BrowseInstrumentView, BrowseComposerView, BrowseShelfLocationView, BrowsePublisherView, PieceDetailView, SuggestedCatalogueNoView
 
 urlpatterns = [
   path('', HomePageView.as_view(), name="home"),
@@ -12,4 +12,5 @@ urlpatterns = [
   path('browse/shelf_location', BrowseShelfLocationView.as_view(), name="browse_by_shelf_location"),
   path('browse/publisher', BrowsePublisherView.as_view(), name="browse_by_publisher"),
   path('pieces/<int:pk>', PieceDetailView.as_view(), name="view_piece"),
+  path('get_suggested_catalogue_no/', SuggestedCatalogueNoView.as_view(), name='get_suggested_catalogue_no'),
 ]

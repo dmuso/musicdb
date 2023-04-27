@@ -1,8 +1,10 @@
 # from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import View
 from django.views.generic import TemplateView, ListView, DetailView
 from django.db.models import Q
 from .models import ShelfLocation, EnsemblePart, Instrument, Composer, Arranger, Publisher, Piece, Grade, Genre, Status
+from django.http import JsonResponse
 
 class HomePageView(LoginRequiredMixin, ListView):
   template_name='home.html'
@@ -36,6 +38,15 @@ class BrowsePublisherView(LoginRequiredMixin, ListView):
 class PieceDetailView(LoginRequiredMixin, DetailView):
   model = Piece
   template_name = 'view_piece.html'
+
+class SuggestedCatalogueNoView(LoginRequiredMixin, View):
+  def get(self, request, *args, **kwargs):
+    instruments = request.GET.getlist('instruments', [])
+    shelf_locations = request.GET.getlist('shelf_locations', [])
+
+    suggested_catalogue_no = Piece.suggested_cat_number(Instrument.objects.get(pk=instruments[0]), ShelfLocation.objects.get(pk=shelf_locations[0]))
+    data = {'suggested_catalogue_no': suggested_catalogue_no}
+    return JsonResponse(data)
 
 class SearchHeader():
   @staticmethod

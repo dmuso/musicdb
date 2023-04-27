@@ -1,70 +1,46 @@
 {% extends "admin/change_form.html" %}
 
 {% block extrahead %}
-    <!-- <script src="{{MEDIA_URL}}js/jquery.js" type="text/javascript"></script> -->
-    <!-- <script type="text/javascript" src="/vendor/jquery/jquery.js"></script> -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script>
+  function getSuggestedCatalogueNo() {
+    const instrumentsDropdown = document.getElementById('id_instruments');
+    const selectedInstruments = Array.from(instrumentsDropdown.selectedOptions).map(option => option.value);
 
-    <script type="application/javascript">
-      var $ = django.jQuery;
-      $(document).on('id_instrument:change', function () {
-        console.log("id_catalogue_number");
-      });
+    const shelfLocationsDropdown = document.getElementById('id_shelf_locations');
+    const selectedShelfLocations = Array.from(shelfLocationsDropdown.selectedOptions).map(option => option.value);
 
-      // $('#form_name input').on('change', reclaculate_price);
+    const queryParams = new URLSearchParams();
+    selectedInstruments.forEach(value => queryParams.append('instruments', value));
+    selectedShelfLocations.forEach(value => queryParams.append('shelf_locations', value));
 
-      //   var reclaculate_price = function () {
-      //     // whatever your logic is for calculating the offer price
-      //     var value = $('#design_hours').val() * $('#design_price').val();
-      //     // Add some error checking here to ensure the price is valid
-      //     // Set the value to you field
-      //     $('#offer_price').val(value);
-      //   }
-  // $(document).ready(function () {
-  //   $("select[name='template']").change(function () {
-  //     $("select['test_case']").val('');
-  //   });
-  // });
+    fetch(`/get_suggested_catalogue_no/?${queryParams.toString()}`)
+      .then(response => response.json())
+      .then(data => {
+        const inputField = document.getElementById('id_catalogue_number');
+        inputField.value = data.suggested_catalogue_no;
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      }
+    );
+  }
+  document.addEventListener('DOMContentLoaded', () => {
+    // Attach event listeners to the select elements
+    const instrumentsDropdown = document.getElementById('id_instruments');
+    const shelfLocationsDropdown = document.getElementById('id_shelf_locations');
 
-      // $(document).ready(function () {
-      // $('#id_instrument').on('change', calculate);
-      // var calculate = 
-        // alert("hello");
-        // function () {
-          // alert("hello");
-      
-          // $.ajax({
-          //   type: 'POST',
-          //   url: "{{ request.get_full_path }}",
-          //   data: { 'instrument_id': $('#id_instrument').val() },
-          //   success: function (data, _status) {
-          //     $('#id_throttle').val(data.throttle);
-          //     $('#id_rate_limit').val(data.rate_limit);
-          //     $('#id_product').val(data.product);
-          //     $('#id_tier_group').val(data.tier_group);
-          //   },
-          //   dataType: "json"
-          // });
-        // };
-      // });
+    if (instrumentsDropdown) {
+        instrumentsDropdown.addEventListener('change', getSuggestedCatalogueNo);
+    }
 
-      // $(document).ready(function() {
-      //   $('#id_instrument').change(function() {
-      //     $.ajax({
-      //       type: 'POST',
-      //       url: "{{ request.get_full_path }}",
-      //       data: {'instrument_id': $('#id_instrument').val()},
-      //       success: function(data, _status) {
-      //         $('#id_throttle').val(data.throttle);
-      //         $('#id_rate_limit').val(data.rate_limit);
-      //         $('#id_product').val(data.product);
-      //         $('#id_tier_group').val(data.tier_group);
-      //       },
-      //       dataType: "json"
-      //     });
-      //   });
-      // });
+    if (shelfLocationsDropdown) {
+        shelfLocationsDropdown.addEventListener('change', getSuggestedCatalogueNo);
+    }
+  });
+</script>
+{% endblock %}
 
-    </script>
+{% block submit_buttons_bottom %}
+<input type="button" value="Send AJAX" class="default" onclick="getSuggestedCatalogueNo()">
+{{ block.super }}
 {% endblock %}

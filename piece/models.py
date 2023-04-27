@@ -431,4 +431,4 @@ class Piece(models.Model):
     if catalogue_number is not None:
       number = int(catalogue_number.split(".")[1])
       number += 1
-    return instrument.abbreviation + shelf_location.code + '.' + f'{number:04}'
+    return instrument.abbreviation + '.' + shelf_location.code + '.' + f'{number:04}'
